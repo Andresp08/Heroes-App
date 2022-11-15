@@ -1,8 +1,17 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
+
+  const navigate = useNavigate();
+
+  const onLogout = () => {
+    navigate('/login', {
+      replace: true //evita que regrese a la pagina anterior
+    });
+  };
+
   return (
-    <nav className="navbar navbar-expand-sm navbar-dark bg-dark p-2">
+    <nav className="navbar navbar-expand-sm navbar-dark bg-dark px-3">
       <Link className="navbar-brand" to="/">
         Asociaciones
       </Link>
@@ -31,9 +40,14 @@ export const Navbar = () => {
 
       <div className="navbar-collapse collapse w-100 order-3 dual-collapse2 d-flex justify-content-end">
         <ul className="navbar-nav ml-auto">
-            <span className="nav-item nav-link text-primary">Andrés</span>
+          <span className="nav-item nav-link text-primary">Andrés</span>
 
-            <button className="nav-item nav-link btn">Logout</button>
+          <button
+            className="nav-item nav-link btn btn-outline-secondary"
+            onClick={onLogout}
+          >
+            Logout
+          </button>
         </ul>
       </div>
     </nav>
