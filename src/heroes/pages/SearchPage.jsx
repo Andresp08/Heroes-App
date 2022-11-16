@@ -3,6 +3,7 @@ import queryString from "query-string";
 
 import { useForm } from "../../hooks/useForm";
 import { HeroCard } from "../components";
+import { getHeroeByName } from "../helpers";
 
 export const SearchPage = () => {
   const navigate = useNavigate();
@@ -11,23 +12,22 @@ export const SearchPage = () => {
   const location = useLocation();
 
   const { q = "" } = queryString.parse(location.search);
+  const heroes = getHeroeByName(q);
+
+  const showSearch = q.length === 0;
+  const showError =  q.length > 0 && heroes.length === 0;
 
   const { searchText, onInputChange } = useForm({
-    searchText: "",
+    searchText: q,
   });
 
   const onSearchSubmit = (e) => {
     e.preventDefault();
-
-    if (searchText.trim().length <= 1) return;
-
     navigate(`?q=${searchText}`);
-
-    console.log({ searchText });
   };
 
   return (
-    <>
+    <div className="my-5">
       <h2>Search</h2>
 
       <hr />
@@ -54,15 +54,29 @@ export const SearchPage = () => {
         <div className="col-7">
           <h4>Results....</h4>
 
-          <div className="alert alert-info">Search a heroe</div>
-          <div className="alert alert-danger">
-            No hero with: <b>{q.length > 0 ? q : 'search...' }</b>{" "}
+          {/*Render alert conditional*/}
+          <div
+            className="alert alert-info"
+            style={{ display: showSearch ? '' : 'none' }}
+          >
+            <p>Search a heroe</p>
           </div>
 
-          {/* <HeroCard {...hero} /> */}
+          <div
+            className="alert alert-danger"
+            style={{ display: showError ? '' : 'none' }}
+          >
+            <p>
+              No hero with: <b>{q}</b>{" "}
+            </p>
+          </div>
+
+          {heroes.map((hero) => (
+            <HeroCard key={hero.id} {...hero} />
+          ))}
         </div>
       </div>
       {/*row*/}
-    </>
+    </div>
   );
 };
